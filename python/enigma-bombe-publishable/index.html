@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enigma and Bombe</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#">Enigma + Bombe</a>
+    <nav class="tabs" aria-label="Main views">
+      <button class="tab-button active" data-tab="enigma">Enigma</button>
+      <button class="tab-button" data-tab="bombe">Bombe</button>
+    </nav>
+  </header>
+
+  <main>
+    <div id="server-warning" class="server-warning" hidden></div>
+
+    <section id="enigma" class="tab-panel active">
+      <section class="plain-intro slim">
+        <h1>Enigma</h1>
+        <p>Pressing a letter key sends one electrical signal through the machine. The plugboard may swap the letter, the rotors change it, the reflector sends the same signal back through the rotors, and one output bulb lights up. The lit bulb is the encrypted letter.</p>
+      </section>
+
+      <div class="grid two">
+        <section class="card">
+          <div class="section-heading">
+            <span class="step-number">1</span>
+            <div>
+              <h2>Machine parts</h2>
+            </div>
+          </div>
+
+          <div class="settings-grid compact no-help-lines">
+            <label>
+              <span>Left rotor <span class="tip" tabindex="0" data-tip="Choose one of the five removable wired wheels. A rotor changes a letter by routing the signal through fixed internal wires. The left rotor is the slowest moving rotor.">?</span></span>
+              <select id="enigma-left-rotor"></select>
+            </label>
+            <label>
+              <span>Middle rotor <span class="tip" tabindex="0" data-tip="Choose a different rotor for the middle slot. The middle rotor sometimes moves when the right rotor reaches its turnover point. Around its own turnover point, it can move on two consecutive letters.">?</span></span>
+              <select id="enigma-middle-rotor"></select>
+            </label>
+            <label>
+              <span>Right rotor <span class="tip" tabindex="0" data-tip="Choose a different rotor for the right slot. This is the fast rotor: it moves before every letter is encoded, so the same typed letter can produce different output letters.">?</span></span>
+              <select id="enigma-right-rotor"></select>
+            </label>
+            <label>
+              <span>Reflector <span class="tip" tabindex="0" data-tip="The reflector is used during every encryption. It changes the signal once, then sends it back through the same rotors by a return path. This is why the same machine setting can both encrypt and decrypt.">?</span></span>
+              <select id="enigma-reflector"></select>
+            </label>
+            <label>
+              <span>Ring settings <span class="tip" tabindex="0" data-tip="Any three letters A to Z, one for each rotor. A rotor has a fixed wired centre and a movable outside alphabet scale. The ring setting says how that outside alphabet scale is lined up with the wiring.">?</span></span>
+              <input id="enigma-rings" value="AAA" maxlength="3" autocomplete="off" inputmode="text" pattern="[A-Za-z]{3}" />
+            </label>
+            <label>
+              <span>Start windows <span class="tip" tabindex="0" data-tip="Any three letters A to Z. These are the letters visible through the three small windows on the machine before the first key is pressed. They set where the rotors start.">?</span></span>
+              <input id="enigma-positions" value="MCK" maxlength="3" autocomplete="off" inputmode="text" pattern="[A-Za-z]{3}" />
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="enigma-random-settings" class="secondary">Random machine</button>
+            <button id="enigma-reset" class="secondary">Start again from window letters</button>
+          </div>
+        </section>
+
+        <section class="card plugboard-card">
+          <div class="section-heading">
+            <span class="step-number">2</span>
+            <div>
+              <h2>Plugboard <span class="tip" tabindex="0" data-tip="The plugboard is the panel of sockets on the front of the machine. A cable between N and I makes N become I, and I become N, before the rotors. The returning signal passes through the same plugboard again.">?</span></h2>
+              <p class="microcopy">Click two sockets to place a cable. A cable swaps those two letters. Click a connected socket to remove its cable.</p>
+            </div>
+          </div>
+
+          <div id="plugboard-physical" class="plugboard-physical" aria-label="Interactive plugboard"></div>
+          <div class="plugboard-summary">
+            <div id="plugboard-count">0 wires connected</div>
+            <div id="plugboard-pairs-list" class="wire-list"></div>
+          </div>
+          <div class="button-row">
+            <button id="plugboard-random" class="secondary">Random 10 wires</button>
+            <button id="plugboard-clear" class="secondary danger-soft">Clear wires</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="section-heading">
+          <span class="step-number">3</span>
+          <div>
+            <h2>Message</h2>
+            <p class="microcopy">The historical machine had letter keys only. Spaces and punctuation are removed before encoding.</p>
+          </div>
+        </div>
+
+        <div class="message-grid">
+          <label class="full-label">Message
+            <textarea id="enigma-input" rows="5">WEATHER REPORT AT DAWN</textarea>
+          </label>
+          <div>
+            <label class="full-label">Machine text
+              <textarea id="enigma-prepared" rows="2" readonly></textarea>
+            </label>
+            <label class="full-label">Encrypted output
+              <textarea id="enigma-output" rows="3" readonly></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="enigma-run">Encode whole message</button>
+          <button id="enigma-step" class="secondary">Show next letter</button>
+          <button id="enigma-auto" class="secondary">Animate message</button>
+        </div>
+      </section>
+
+      <section class="card visual-card">
+        <div class="section-heading split">
+          <div class="section-heading inline">
+            <span class="step-number">4</span>
+            <div>
+              <h2>One-letter path</h2>
+              <p class="microcopy">Follow the arrows. Each box shows the letter after that part. <strong>N→I</strong> means this part changed N into I. Rotor boxes also show their current window letter.</p>
+            </div>
+          </div>
+          <div id="enigma-state-pill" class="state-pill">Ready</div>
+        </div>
+        <div id="enigma-visual" class="visual-shell"></div>
+        <div id="enigma-trace" class="trace-panel compact-trace" hidden></div>
+      </section>
+    </section>
+
+    <section id="bombe" class="tab-panel">
+      <section class="plain-intro slim">
+        <h1>Bombe</h1>
+        <p>A Bombe starts with a crib: a guessed word or phrase from the original message. It tries every place the crib could fit under the ciphertext, then searches for Enigma settings whose plugboard consequences do not contradict each other.</p>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <span class="step-number">1</span>
+          <div>
+            <h2>Crib and ciphertext</h2>
+          </div>
+        </div>
+
+        <div class="message-grid">
+          <label class="full-label">Ciphertext
+            <textarea id="bombe-ciphertext" rows="5"></textarea>
+          </label>
+          <div>
+            <label class="full-label">Crib, guessed plaintext <span class="tip" tabindex="0" data-tip="A crib is a guessed part of the original message. For example, WEATHERREPORT might be guessed if weather reports often appear in this traffic.">?</span>
+              <input id="bombe-crib" value="WEATHERREPORTATDAWN" autocomplete="off" />
+            </label>
+            <label class="full-label small-input">Preview position <span class="tip" tabindex="0" data-tip="Position 0 means the crib begins at the first ciphertext letter. Position 5 means five ciphertext letters come before it. The search still checks every possible position automatically, but it checks this preview position first.">?</span>
+              <input id="bombe-offset" value="0" inputmode="numeric" autocomplete="off" />
+            </label>
+          </div>
+        </div>
+
+        <div id="offset-help" class="mini-panel">Possible crib positions will appear here.</div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading split">
+          <div class="section-heading inline">
+            <span class="step-number">2</span>
+            <div>
+              <h2>Bombe search</h2>
+              <p class="microcopy">A crib placement is where the guessed text sits under the ciphertext. A stop is a candidate machine setting that survives the Bombe contradiction test. The standard search fixes the ring setting, which keeps the search practical in a browser. Exhaustive ring search is available when needed.</p>
+            </div>
+          </div>
+          <div id="bombe-state-pill" class="state-pill">Ready</div>
+        </div>
+
+        <div class="settings-grid compact no-help-lines">
+          <label>
+            <span>Search mode <span class="tip" tabindex="0" data-tip="Standard search fixes the ring setting and searches rotor orders, reflectors, start windows, and crib positions. Exhaustive ring search also tries every ring setting, which is 17,576 times larger.">?</span></span>
+            <select id="bombe-search-mode">
+              <option value="standard" selected>Standard search, fixed ring setting</option>
+              <option value="exhaustive-rings">Exhaustive ring search</option>
+              <option value="chosen">Chosen setup, fixed ring setting</option>
+              <option value="chosen-rings">Chosen setup, all ring settings</option>
+            </select>
+          </label>
+          <label id="bombe-ring-wrapper">
+            <span>Ring setting <span class="tip" tabindex="0" data-tip="Any three letters A to Z. Used only when the search mode fixes the ring setting. In all-ring modes, this field is hidden because the app tries AAA through ZZZ.">?</span></span>
+            <input id="bombe-rings" value="AAA" maxlength="3" autocomplete="off" inputmode="text" pattern="[A-Za-z]{3}" />
+          </label>
+        </div>
+
+        <details class="advanced-box" id="bombe-chosen-setup" hidden>
+          <summary>Chosen setup</summary>
+          <div class="settings-grid compact no-help-lines">
+            <label><span>Left rotor</span><select id="bombe-left-rotor"><option>I</option></select></label>
+            <label><span>Middle rotor</span><select id="bombe-middle-rotor"><option>II</option></select></label>
+            <label><span>Right rotor</span><select id="bombe-right-rotor"><option>III</option></select></label>
+            <label><span>Reflector</span><select id="bombe-reflector"><option>B</option></select></label>
+          </div>
+        </details>
+
+        <div id="search-summary" class="search-summary"></div>
+        <div id="search-estimate" class="mini-panel">Choose a search mode and run the search.</div>
+
+        <div class="button-row">
+          <button id="bombe-search">Run Bombe search</button>
+          <button id="bombe-cancel" class="secondary danger-soft" disabled>Stop search</button>
+        </div>
+
+        <div class="progress-wrap" aria-label="Search progress">
+          <div id="bombe-progress" class="progress-bar"></div>
+        </div>
+        <div id="bombe-status" class="status-box">No search has been run yet.</div>
+
+        <select id="bombe-scope" class="visually-hidden" aria-hidden="true"><option value="orders-both-reflectors" selected>All setups</option><option value="selected">Selected setup</option></select>
+      </section>
+
+      <section class="card visual-card">
+        <div class="section-heading split">
+          <div class="section-heading inline">
+            <span class="step-number">3</span>
+            <div>
+              <h2>Menu</h2>
+              <p class="microcopy">The menu uses the same socket-board style as the Enigma plugboard, but it is not a guessed plugboard. Each line joins a guessed plaintext letter to the ciphertext letter in the same crib column.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two visual-grid">
+          <div>
+            <h3>Crib placement <span class="tip" tabindex="0" data-tip="This table shows one possible placement of the crib under the ciphertext. Red cells are impossible because Enigma never encrypts a letter as itself.">?</span></h3>
+            <div id="crib-alignment" class="alignment"></div>
+          </div>
+          <div>
+            <h3>Menu graph <span class="tip" tabindex="0" data-tip="Same layout as the plugboard. Different meaning: each line comes from one crib column, not from a final plugboard cable.">?</span></h3>
+            <div id="menu-graph" class="visual-shell small"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card visual-card">
+        <div class="section-heading">
+          <span class="step-number">4</span>
+          <div>
+            <h2>Stops and decoding</h2>
+            <p class="microcopy">A stop is one candidate key that survived the contradiction test. The first two buttons test the selected stop. The third checks the stops currently listed. A short crib such as ATDAWN can leave many false stops.</p>
+          </div>
+        </div>
+
+        <div class="grid two visual-grid">
+          <div>
+            <label class="full-label">Candidate stops
+              <select id="bombe-stops" size="10"></select>
+            </label>
+            <div class="button-row">
+              <button id="bombe-decode" class="secondary">Check selected stop</button>
+              <button id="bombe-complete" class="secondary">Try completions for selected stop</button>
+              <button id="bombe-complete-all" class="secondary">Try listed stops</button>
+            </div>
+            <label class="full-label">Decoded output
+              <textarea id="bombe-decoded" rows="12" readonly></textarea>
+            </label>
+          </div>
+          <div>
+            <h3>Selected stop</h3>
+            <div id="stop-details" class="mini-panel">No stop selected.</div>
+            <h3>Plugboard consequences <span class="tip" tabindex="0" data-tip="The diagonal board used one simple fact about plugboard cables: a cable has no direction. If A is connected to V, then V is connected to A. This fact comes from the physical cable itself, not from the reflector.">?</span></h3>
+            <div id="assumption-grid" class="assumption-grid"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
