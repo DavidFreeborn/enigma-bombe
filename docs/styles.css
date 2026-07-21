@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&display=swap');
+
 :root {
   color-scheme: light;
   --bg: #f4efe6;
@@ -16,8 +18,25 @@
   --bad: #9a413a;
   --warning: #9c6a2e;
   --shadow: 0 16px 40px rgba(55, 43, 30, 0.10);
-  --radius: 18px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --radius: 2px;
+  --font-serif: "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
+}
+
+.back-nav {
+  width: min(1220px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 0.75rem 0 0;
+}
+.back-nav a {
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.back-nav a:hover {
+  color: var(--ink);
+  text-decoration: underline;
 }
 
 * {
@@ -66,28 +85,26 @@ main {
 
 .tabs {
   display: flex;
-  gap: 8px;
-  padding: 6px;
+  gap: 4px;
+  padding: 4px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: rgba(255, 253, 248, 0.82);
-  box-shadow: 0 8px 20px rgba(66, 52, 36, 0.08);
 }
 
 button,
 .tab-button {
   border: 0;
-  border-radius: 999px;
-  padding: 10px 15px;
+  border-radius: var(--radius);
+  padding: 8px 14px;
   background: var(--accent);
   color: white;
-  font-weight: 750;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 140ms ease, background 140ms ease, opacity 140ms ease;
 }
 
 button:hover {
-  transform: translateY(-1px);
+  background: var(--accent-dark);
 }
 
 button:disabled {
@@ -135,9 +152,11 @@ button.danger-soft {
 
 .plain-intro h1 {
   margin: 0 0 8px;
-  font-size: clamp(2rem, 3.5vw, 3.5rem);
-  letter-spacing: -0.06em;
-  line-height: 0.95;
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .plain-intro p,
@@ -196,16 +215,17 @@ button.danger-soft {
 h2,
 h3 {
   margin: 0 0 6px;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-family: var(--font-serif);
+  line-height: 1.2;
+  font-weight: 600;
 }
 
 h2 {
-  font-size: 1.28rem;
+  font-size: 1.25rem;
 }
 
 h3 {
-  font-size: 1.02rem;
+  font-size: 1rem;
 }
 
 .settings-grid {
@@ -236,7 +256,7 @@ select,
 textarea {
   width: 100%;
   border: 1px solid var(--line-strong);
-  border-radius: 13px;
+  border-radius: var(--radius);
   padding: 10px 12px;
   background: white;
   color: var(--ink);
@@ -277,7 +297,7 @@ textarea:focus {
 .trace-panel {
   background: var(--cream);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius);
   padding: 12px 13px;
   margin-top: 14px;
 }
@@ -299,7 +319,7 @@ textarea:focus {
   color: var(--accent-dark);
   border: 1px solid #c5d8cf;
   padding: 9px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   font-weight: 800;
   white-space: nowrap;
 }
@@ -310,7 +330,7 @@ textarea:focus {
 
 .plugboard-physical {
   background: linear-gradient(180deg, #7e5f43 0, #5d4431 100%);
-  border-radius: 18px;
+  border-radius: var(--radius);
   border: 1px solid #4e3928;
   padding: 10px;
   box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.18);
@@ -384,7 +404,7 @@ textarea:focus {
   display: inline-block;
   background: var(--accent-soft);
   color: var(--accent-dark);
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 3px 8px;
   font-weight: 750;
   font-size: 0.84rem;
@@ -394,7 +414,7 @@ textarea:focus {
   overflow-x: auto;
   background: var(--cream);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius);
   padding: 12px;
 }
 
@@ -484,7 +504,7 @@ textarea:focus {
 .alignment-table td {
   background: white;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 7px 9px;
   text-align: center;
   font-weight: 800;
@@ -532,7 +552,7 @@ textarea:focus {
 }
 
 .assumption {
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 8px 6px;
   text-align: center;
   font-size: 0.86rem;
@@ -555,7 +575,7 @@ textarea:focus {
 .progress-wrap {
   margin-top: 15px;
   background: #eadfce;
-  border-radius: 999px;
+  border-radius: var(--radius);
   height: 12px;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -624,7 +644,7 @@ code {
 .inline-note {
   background: #f7f0e5;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 9px 11px;
   margin-bottom: 12px;
 }
@@ -655,7 +675,7 @@ code {
   width: min(280px, 70vw);
   background: #201d18;
   color: #fffdf8;
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 10px 11px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
   opacity: 0;
@@ -754,7 +774,7 @@ code {
   gap: 10px;
   background: white;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 8px 10px;
 }
 
@@ -763,7 +783,7 @@ code {
   height: 27px;
   display: inline-grid;
   place-items: center;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: var(--accent-soft);
   color: var(--accent-dark);
   font-weight: 900;
@@ -804,7 +824,7 @@ code {
 .bombe-explain-grid > div {
   background: #f7f0e5;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 10px 12px;
 }
 
@@ -837,7 +857,7 @@ code {
   margin: 6px 0 18px;
   background: #fff5dc;
   border: 1px solid #d5b575;
-  border-radius: 14px;
+  border-radius: var(--radius);
   padding: 12px 14px;
   color: #61461e;
   font-weight: 650;
@@ -855,7 +875,7 @@ code {
   margin-top: 14px;
   background: var(--cream);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius);
   padding: 11px 13px;
 }
 
@@ -882,7 +902,7 @@ code {
   align-items: center;
   background: white;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 7px 10px;
   font-weight: 750;
 }
@@ -975,7 +995,7 @@ code {
 .search-summary span {
   background: white;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 7px 10px;
   font-size: 0.88rem;
   font-weight: 750;
